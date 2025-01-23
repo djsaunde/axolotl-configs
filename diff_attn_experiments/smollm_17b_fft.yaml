@@ -1,0 +1,95 @@
+base_model: HuggingFaceTB/SmolLM2-1.7B
+
+load_in_8bit: false
+load_in_4bit: false
+strict: false
+
+# datasets:
+#   - path: HuggingFaceFW/fineweb-edu
+#     name: sample-10BT
+#     type: pretrain  # completion
+#     split: train
+
+datasets:
+- path: mhenrichsen/alpaca_2k_test
+  type: alpaca
+  split: train[:10%]
+test_datasets:
+- path: mhenrichsen/alpaca_2k_test
+  type: alpaca
+  split: train[10%:20%]
+
+# pretraining_dataset:
+#   - path: HuggingFaceFW/fineweb-edu
+#     name: sample-10BT
+#     type: pretrain
+#     split: train
+
+# test_datasets:
+#   - path: HuggingFaceFW/fineweb-edu
+#     name: sample-10BT
+#     type: pretrain
+#     split: train[99%:]
+dataset_prepared_path: last_run_prepared
+output_dir: ./outputs/smollm2_1.7b_fft
+sequence_len: 4096 # 8192
+# sample_packing: true
+pad_to_sequence_len: true
+
+wandb_project: diff-transformer-project
+wandb_entity: axolotl-ai
+wandb_watch: all
+wandb_name: smollm2-1.7b-fft-unconverted-10k
+wandb_log_model: 
+
+gradient_accumulation_steps: 1
+micro_batch_size: 8
+num_epochs: 1
+optimizer: paged_adamw_8bit
+lr_scheduler: cosine
+learning_rate: 2e-5
+
+train_on_inputs: false
+group_by_length: false
+bf16: auto
+fp16:
+tf32: false
+
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+early_stopping_patience:
+resume_from_checkpoint:
+logging_steps: 1
+xformers_attention:
+
+max_steps: 10000
+warmup_steps: 100
+evals_per_epoch:
+eval_table_size:
+save_steps: 250
+debug:
+deepspeed:
+fsdp:
+fsdp_config:
+special_tokens:
+  pad_token: <|end_of_text|>
+
+adam_beta1: 0.9
+adam_beta2: 0.95
+adam_epsilon: 1e-8
+weight_decay: 0.01
+
+flash_attention: true
+flash_attn_cross_entropy: true
+flash_attn_rms_norm: true
+
+# plugins:
+#   - axolotl.integrations.liger.LigerPlugin
+# liger_rope: true
+# liger_rms_norm: true
+# liger_glu_activation: true
+# liger_layer_norm: true
+# liger_fused_linear_cross_entropy: true
+
+# torch_compile: true
