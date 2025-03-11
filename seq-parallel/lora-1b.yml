@@ -71,10 +71,12 @@ special_tokens:
 
 sequence_parallel_size: 2
 
-wandb_project: seq-parallel
-wandb_entity: axolotl-ai
-wandb_watch: all
-wandb_name: seq-parallel-size-2-cuda-all-visible-no-sample-packing
-wandb_log_model: 
+# wandb_project: seq-parallel
+# wandb_entity: axolotl-ai
+# wandb_watch: all
+# wandb_name: seq-parallel-size-2
+# wandb_log_model: 
 
 seed: 0
+
+random_init: true
