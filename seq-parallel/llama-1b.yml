@@ -10,10 +10,12 @@ datasets:
   - path: teknium/GPT4-LLM-Cleaned
     type: alpaca
 dataset_prepared_path: last_run_prepared
+val_set_size: 0.1
 output_dir: ./outputs/lora-out
 
 sequence_len: 2048
-sample_packing: false
+sample_packing: true
+eval_sample_packing: true
 pad_to_sequence_len: true
 
 wandb_project:
@@ -44,6 +46,7 @@ xformers_attention:
 flash_attention: true
 
 warmup_steps: 10
+evals_per_epoch: 4
 saves_per_epoch: 1
 debug:
 deepspeed:
@@ -53,7 +56,7 @@ fsdp_config:
 special_tokens:
   pad_token: "<|end_of_text|>"
 
-sequence_parallel_size: 2
+sequence_parallel_degree: 2
 
 # wandb_project: seq-parallel
 # wandb_entity: axolotl-ai
