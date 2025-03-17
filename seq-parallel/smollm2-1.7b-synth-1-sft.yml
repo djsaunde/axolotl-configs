@@ -1,0 +1,74 @@
+base_model: HuggingFaceTB/SmolLM2-1.7B
+# Automatically upload checkpoint and final model to HF
+# hub_model_id: username/custom_model_name
+
+load_in_8bit: false
+load_in_4bit: false
+strict: false
+
+datasets:
+  - path: PrimeIntellect/SYNTHETIC-1-SFT-Data
+    type: chat_template
+    split: train[:1%]
+    field_messages: messages  # Your data has "messages" array
+    message_property_mappings:
+      role: role              # Your data already uses "role"
+      content: content        # Your data already uses "content"
+    roles:
+      user:
+        - user
+      assistant:
+        - assistant
+    # Only train on assistant responses (which contain the code predictions)
+    roles_to_train: ["assistant"]
+dataset_prepared_path: last_run_prepared
+val_set_size: 0.05
+output_dir: ./synthetic-reasoning-sft-output
+
+chat_template: chatml  # Using chatml template
+
+sequence_len: 16384
+sample_packing: false
+eval_sample_packing: false
+pad_to_sequence_len: true
+
+# wandb_project: synthetic-reasoning-training
+# wandb_entity: axolotl-ai
+# wandb_watch: all
+# wandb_name: synthetic-reasoning-sft
+# wandb_log_model: false
+
+gradient_accumulation_steps: 1
+micro_batch_size: 1
+num_epochs: 3
+optimizer: adamw_8bit
+lr_scheduler: cosine
+learning_rate: 0.0002
+
+train_on_inputs: false
+group_by_length: false
+bf16: auto
+fp16:
+tf32: false
+
+gradient_checkpointing: true
+resume_from_checkpoint:
+local_rank:
+logging_steps: 1
+xformers_attention:
+flash_attention: true
+
+warmup_steps: 100
+evals_per_epoch: 4
+saves_per_epoch: 1
+debug:
+deepspeed:
+weight_decay: 0.01
+fsdp:
+fsdp_config:
+special_tokens:
+  pad_token: "<|end_of_text|>"
+
+sequence_parallel_degree: 2
+
+seed: 0
