@@ -66,4 +66,4 @@ sequence_parallel_degree: 2
 
 seed: 0
 
-random_init: true
+random_init_weights: true
