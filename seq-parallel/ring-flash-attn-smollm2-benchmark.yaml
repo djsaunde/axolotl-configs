@@ -1,0 +1,30 @@
+# Config for testing ring-flash-attn sequence parallelism
+# Optimized for SmolLM2-1.7B model
+
+base_model: HuggingFaceTB/SmolLM2-1.7B
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+is_llama_derived_model: true  # SmolLM2 uses LLaMA architecture
+
+load_in_8bit: false
+load_in_4bit: false
+# For distributed GPU setups, use auto for automatic device mapping
+device_map: auto 
+
+# Enable Flash Attention 2 (necessary for ring-flash-attn)
+flash_attention: true
+# Using bf16 for better performance with flash attention
+torch_dtype: bfloat16
+# This is set by the benchmark script: sequence_parallel_degree: 2
+
+# Training & optimization settings - useful for benchmarking
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+
+# Prompt formatting settings
+chat_template: chatml
+special_tokens:
+  bos_token: "<s>"
+  eos_token: "</s>"
+  unk_token: "<unk>"

@@ -1,0 +1,43 @@
+# Config for testing ring-flash-attn sequence parallelism with QLoRA
+# Optimized for LLaMA 3.1 8B model with 4-bit quantization
+
+base_model: meta-llama/Meta-Llama-3.1-8B
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+is_llama_derived_model: true
+
+# Enable QLoRA
+adapter: qlora
+load_in_4bit: true
+lora_r: 32
+lora_alpha: 16
+lora_dropout: 0.05
+lora_target_modules:
+  - q_proj
+  - k_proj
+  - v_proj
+  - o_proj
+  - gate_proj
+  - up_proj
+  - down_proj
+
+# For distributed GPU setups, use auto for automatic device mapping
+device_map: auto 
+
+# Enable Flash Attention 2 (necessary for ring-flash-attn)
+flash_attention: true
+# Using bf16 for better performance with flash attention
+torch_dtype: bfloat16
+# This is set by the benchmark script: sequence_parallel_degree: 2
+
+# Training & optimization settings - useful for benchmarking
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+
+# Prompt formatting settings
+chat_template: llama-3
+special_tokens:
+  bos_token: "<s>"
+  eos_token: "</s>"
+  unk_token: "<unk>"

@@ -1,0 +1,60 @@
+# Config for testing ring-flash-attn sequence parallelism
+# Optimized for LLaMA 3.1 8B model
+
+base_model: meta-llama/Meta-Llama-3.1-8B
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+is_llama_derived_model: true
+
+# Not used
+datasets:
+  - path: teknium/GPT4-LLM-Cleaned
+    type: alpaca
+micro_batch_size: 1
+gradient_accumulation_steps: 1
+learning_rate: 1e-4
+# End not used
+
+load_in_8bit: false
+load_in_4bit: false
+device_map: auto 
+
+# Enable Flash Attention 2 (necessary for ring-flash-attn)
+flash_attention: true
+# Using bf16 for better performance with flash attention
+torch_dtype: bfloat16
+# sequence_parallel_degree is set by the benchmarking script
+
+# Training & optimization settings - useful for benchmarking
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+
+# To enable LoRA for benchmarking, uncomment these:
+# adapter: lora
+# lora_r: 32
+# lora_alpha: 16
+# lora_dropout: 0.05
+# lora_target_modules:
+#   - q_proj
+#   - k_proj
+#   - v_proj
+#   - o_proj
+#   - gate_proj
+#   - up_proj
+#   - down_proj
+
+# Uncomment to enable QLora for benchmarking
+# adapter: qlora
+# load_in_4bit: true
+# lora_r: 32
+# lora_alpha: 16
+# lora_dropout: 0.05
+# lora_target_modules:
+#   - q_proj
+#   - k_proj
+#   - v_proj
+#   - o_proj
+#   - gate_proj
+#   - up_proj
+#   - down_proj
