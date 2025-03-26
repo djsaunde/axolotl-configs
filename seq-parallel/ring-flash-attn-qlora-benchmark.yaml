@@ -1,43 +1,82 @@
-# Config for testing ring-flash-attn sequence parallelism with QLoRA
-# Optimized for LLaMA 3.1 8B model with 4-bit quantization
+# Config for testing ring-flash-attn sequence parallelism
+# Optimized for LLaMA 3.1 8B model
 
 base_model: meta-llama/Meta-Llama-3.1-8B
+# base_model: NousResearch/Llama-3.2-1B
 model_type: AutoModelForCausalLM
 tokenizer_type: AutoTokenizer
 is_llama_derived_model: true
 
-# Enable QLoRA
-adapter: qlora
-load_in_4bit: true
-lora_r: 32
-lora_alpha: 16
-lora_dropout: 0.05
-lora_target_modules:
-  - q_proj
-  - k_proj
-  - v_proj
-  - o_proj
-  - gate_proj
-  - up_proj
-  - down_proj
+# Misc
+datasets:
+  - path: teknium/GPT4-LLM-Cleaned
+    type: alpaca
 
-# For distributed GPU setups, use auto for automatic device mapping
+learning_rate: 1e-4
+gradient_accumulation_steps: 1
+micro_batch_size: 1
+num_epochs: 1
+optimizer: adamw_8bit
+lr_scheduler: cosine
+learning_rate: 0.0002
+
+train_on_inputs: false
+group_by_length: false
+bf16: auto
+fp16:
+tf32: false
+
+sample_packing: true
+pad_to_sequence_len: true
+
+special_tokens:
+  pad_token: "<|end_of_text|>"
+# End misc
+
+load_in_8bit: false
 device_map: auto 
 
 # Enable Flash Attention 2 (necessary for ring-flash-attn)
 flash_attention: true
 # Using bf16 for better performance with flash attention
 torch_dtype: bfloat16
-# This is set by the benchmark script: sequence_parallel_degree: 2
+# sequence_parallel_degree is set by the benchmarking script
 
 # Training & optimization settings - useful for benchmarking
-gradient_checkpointing: true
+gradient_checkpointing: false
 gradient_checkpointing_kwargs:
   use_reentrant: false
+torch_compile: "auto"
 
-# Prompt formatting settings
-chat_template: llama-3
-special_tokens:
-  bos_token: "<s>"
-  eos_token: "</s>"
-  unk_token: "<unk>"
+plugins:
+  - axolotl.integrations.liger.LigerPlugin
+liger_rope: true
+liger_rms_norm: true
+liger_glu_activation: true
+liger_layer_norm: true
+liger_fused_linear_cross_entropy: true
+
+# To enable LoRA for benchmarking, uncomment these:
+# adapter: lora
+# lora_r: 32
+# lora_alpha: 16
+# lora_dropout: 0.05
+# lora_target_modules:
+#   - q_proj
+#   - k_proj
+#   - v_proj
+#   - o_proj
+#   - gate_proj
+#   - up_proj
+#   - down_proj
+
+# Uncomment to enable QLora for benchmarking
+adapter: qlora
+load_in_4bit: true
+lora_r: 8
+lora_alpha: 16
+lora_dropout: 0.05
+lora_target_modules:
+  - q_proj
+  - k_proj
+  - v_proj
