@@ -2,7 +2,6 @@
 # Optimized for LLaMA 3.1 8B model
 
 base_model: meta-llama/Meta-Llama-3.1-8B
-# base_model: NousResearch/Llama-3.2-1B
 model_type: AutoModelForCausalLM
 tokenizer_type: AutoTokenizer
 is_llama_derived_model: true
@@ -26,27 +25,27 @@ bf16: auto
 fp16:
 tf32: false
 
-sample_packing: true
+sample_packing: false
 pad_to_sequence_len: true
 
 special_tokens:
   pad_token: "<|end_of_text|>"
+
+save_strategy: "no"
+eval_strategy: "no"
 # End misc
 
 load_in_8bit: false
 device_map: auto 
 
-# Enable Flash Attention 2 (necessary for ring-flash-attn)
 flash_attention: true
-# Using bf16 for better performance with flash attention
 torch_dtype: bfloat16
-# sequence_parallel_degree is set by the benchmarking script
 
 # Training & optimization settings - useful for benchmarking
 gradient_checkpointing: false
 gradient_checkpointing_kwargs:
   use_reentrant: false
-torch_compile: "auto"
+# torch_compile: "auto"
 
 plugins:
   - axolotl.integrations.liger.LigerPlugin
