@@ -1,0 +1,63 @@
+# train w/ shisa-ai/shisa-v1-athenev2-reannotated-filtered
+
+base_model: meta-llama/Meta-Llama-3.1-8B-Instruct
+model_type: LlamaForCausalLM
+tokenizer_type: AutoTokenizer
+
+load_in_8bit: false
+load_in_4bit: false
+strict: false
+
+# User Liger
+plugins:
+  - axolotl.integrations.liger.LigerPlugin
+liger_rope: true
+liger_rms_norm: true
+liger_glu_activation: true
+liger_fused_linear_cross_entropy: true
+
+datasets:
+  - path: teknium/GPT4-LLM-Cleaned
+    type: alpaca
+val_set_size: 0.5
+evals_per_epoch: 2
+
+dataset_prepared_path: last_run_prepared
+
+sequence_len: 8192
+sequence_parallel_degree: 2  # Split each sequence into 4 parts
+sample_packing: true
+pad_to_sequence_len: true
+
+gradient_accumulation_steps: 2
+micro_batch_size: 4
+num_epochs: 3
+optimizer: paged_adamw_8bit
+lr_scheduler: linear
+learning_rate: 8e-6
+
+train_on_inputs: false
+group_by_length: false
+bf16: auto
+fp16:
+tf32: false
+
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+early_stopping_patience:
+resume_from_checkpoint:
+logging_steps: 1
+xformers_attention:
+flash_attention: true
+
+warmup_steps: 100
+saves_per_epoch: 0
+save_total_limit: 1 # Only store a single checkpoint
+debug:
+deepspeed: deepspeed_configs/zero3_bf16.json
+weight_decay: 1e-4
+fsdp:
+fsdp_config:
+special_tokens:
+  pad_token: <|end_of_text|>

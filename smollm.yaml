@@ -12,9 +12,11 @@ learning_rate: 1e-4
 # max_steps: 1000
 val_set_size: 0.1
 micro_batch_size: 1
-sequence_len: 2048
+sequence_len: 8196
 special_tokens:
   pad_token: <|endoftext|>
+flash_attention: true
+sample_packing: false
 
 # wandb_project: diff-transformer
 # wandb_entity: axolotl-ai
