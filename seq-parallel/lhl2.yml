@@ -34,7 +34,7 @@ pad_to_sequence_len: true
 neftune_noise_alpha: 5
 
 gradient_accumulation_steps: 1
-micro_batch_size: 4
+micro_batch_size: 1
 num_epochs: 3
 optimizer: paged_adamw_8bit
 lr_scheduler: linear
@@ -71,5 +71,5 @@ special_tokens:
 wandb_project: seq-parallel
 wandb_entity: axolotl-ai
 wandb_watch: all
-wandb_name: sp2-mbsz1-fix
+wandb_name: sp2-mbsz1-update
 wandb_log_model: 

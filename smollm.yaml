@@ -13,4 +13,4 @@ special_tokens:
 flash_attention: true
 sample_packing: false
 
-deepspeed: deepspeed_configs/zero3_bf16.json
+# deepspeed: deepspeed_configs/zero3_bf16.json
