@@ -33,7 +33,7 @@ pad_to_sequence_len: true
 # marginal difference
 neftune_noise_alpha: 5
 
-gradient_accumulation_steps: 4
+gradient_accumulation_steps: 1
 micro_batch_size: 4
 num_epochs: 3
 optimizer: paged_adamw_8bit
@@ -68,8 +68,8 @@ fsdp_config:
 special_tokens:
   pad_token: <|end_of_text|>
 
-# wandb_project: seq-parallel
-# wandb_entity: axolotl-ai
-# wandb_watch: all
-# wandb_name: sp4-mbsz4
-# wandb_log_model: 
+wandb_project: seq-parallel
+wandb_entity: axolotl-ai
+wandb_watch: all
+wandb_name: sp2-mbsz1-fix
+wandb_log_model: 
