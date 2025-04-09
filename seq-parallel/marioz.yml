@@ -1,0 +1,88 @@
+
+base_model: deepseek-ai/deepseek-coder-6.7b-instruct
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+# Automatically upload checkpoint and final model to HF
+# hub_model_id: username/custom_model_name
+trust_remote_code: true
+
+load_in_8bit: false
+load_in_4bit: false
+strict: false
+
+datasets:
+  - path: tatsu-lab/alpaca
+    type: alpaca
+# datasets:
+#   - path: ./data/data.jsonl
+#     type: chat_template
+#     chat_template: chatml
+#     field_messages: messages
+#     message_property_mappings:
+#        role: role
+#        content: content
+#     roles_to_train: ["assistant"]
+#     train_on_eos: turn
+
+dataset_prepared_path: last_run_prepared
+# val_set_size: 0.10
+output_dir: ./outputs/out-fft
+
+sequence_len: 8192
+# sequence_len: 1024
+sample_packing: true
+pad_to_sequence_len: true
+
+bf16: auto
+fp16:
+tf32: false
+
+wandb_project:
+wandb_entity:
+wandb_watch:
+wandb_name:
+wandb_log_model:
+
+sequence_parallel_degree: 4 #1 #4  # Set to the number of GPUs to split sequences across
+flash_attention: true  # SP requires flash attention
+micro_batch_size: 1  # SP requires this is set to 1
+# (optional) strides across the key dimension; larger values use more memory but should make training a bit faster
+heads_k_stride: 1
+gradient_accumulation_steps: 8
+num_epochs: 4 #1
+optimizer: adamw_torch_fused
+lr_scheduler: cosine
+learning_rate: 2e-4  #2e-5
+
+train_on_inputs: false
+group_by_length: false
+
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: true
+early_stopping_patience:
+resume_from_checkpoint:
+logging_steps: 1
+xformers_attention:
+
+warmup_steps: 400 # 100
+# evals_per_epoch: 4
+# eval_table_size:
+# eval_max_new_tokens: 128
+saves_per_epoch: 1
+debug:
+weight_decay: 0.0
+special_tokens:
+deepspeed: deepspeed_configs/zero3_bf16.json
+
+plugins:
+    - axolotl.integrations.liger.LigerPlugin
+liger_rope: true
+liger_rms_norm: true
+liger_glu_activation: true
+liger_layer_norm: true
+liger_fused_linear_cross_entropy: true
+
+lora_mlp_kernel: true
+lora_qkv_kernel: true
+lora_o_kernel: true
