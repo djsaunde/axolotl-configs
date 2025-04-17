@@ -16,22 +16,22 @@ output_dir: ./outputs/lora-out
 
 sequence_len: 4096
 # sample_packing: false
-sample_packing: true
+sample_packing: false
 # eval_sample_packing: true
 pad_to_sequence_len: true
 
 sequence_parallel_degree: 4
-# ring_attn_func: batch_ring
-ring_attn_func: varlen_llama3
+ring_attn_func: batch_stripe
+# ring_attn_func: varlen_llama3
 
-wandb_project: seq-parallel-all
+wandb_project: seq-parallel-all-v2
 wandb_entity: axolotl-ai
 wandb_watch: all
-wandb_name: mbsz2-sp4-pad-batch-zigzag
-wandb_log_model: 
+wandb_name: mbsz2-sp4-pad-batch-stripe
+wandb_log_model:
 
 gradient_accumulation_steps: 1
-micro_batch_size: 1
+micro_batch_size: 2
 num_epochs: 1
 optimizer: adamw_torch_fused  # adamw_8bit
 lr_scheduler: cosine
@@ -53,6 +53,7 @@ xformers_attention:
 flash_attention: true
 
 warmup_steps: 10
+max_steps: 99
 # evals_per_epoch: 4
 # saves_per_epoch: 1
 save_strategy: "no"

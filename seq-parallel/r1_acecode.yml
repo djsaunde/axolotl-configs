@@ -40,7 +40,7 @@ datasets:
 dataset_prepared_path: /workspace/data/last_run_prepared
 dataset_processes:
 skip_prepare_dataset: true
-val_set_size: 0.0
+# val_set_size: 0.0
 output_dir: /workspace/data/axolotl-artifacts/r1-outputs/1403
 
 dataloader_prefetch_factor: 32
@@ -50,7 +50,7 @@ dataloader_pin_memory: true
 gc_steps: 1
 sequence_len: 1024
 sample_packing: false
-eval_sample_packing: false
+# eval_sample_packing: false
 pad_to_sequence_len: false
 
 gradient_accumulation_steps: 2
@@ -84,7 +84,7 @@ gradient_checkpointing_kwargs:
 flash_attention: true
 
 warmup_steps: 500
-evals_per_epoch: 0
+# evals_per_epoch: 0
 saves_per_epoch: 0
 save_steps: 0.5
 
@@ -93,3 +93,5 @@ save_steps: 0.5
 # wandb_watch: all
 # wandb_name: baseline
 # wandb_log_model: 
+
+seed: 0
