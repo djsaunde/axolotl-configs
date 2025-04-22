@@ -27,7 +27,7 @@ trl:
     - grpo_code.code_execution_reward_func
     - grpo_code.answer_execution_reward_func
 
-  num_generations: 2
+  num_generations: 16
   max_completion_length: 512
   log_completions: false
 
@@ -53,7 +53,7 @@ eval_sample_packing: false
 pad_to_sequence_len: false
 
 gradient_accumulation_steps: 2
-micro_batch_size: 2
+micro_batch_size: 16 # 32
 num_epochs: 1
 max_steps: 2500
 
