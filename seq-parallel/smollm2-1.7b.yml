@@ -8,16 +8,13 @@ datasets:
   - path: teknium/GPT4-LLM-Cleaned
     type: alpaca
 dataset_prepared_path: last_run_prepared
-# val_set_size: 0.1
 output_dir: ./outputs/lora-out
 
 sequence_len: 4096
-# sample_packing: false
 sample_packing: false
-# eval_sample_packing: true
 pad_to_sequence_len: true
 
-# sequence_parallel_degree: 4
+# sequence_parallel_degree: 2
 # ring_attn_func: batch_stripe
 # ring_attn_func: varlen_llama3
 
@@ -30,7 +27,7 @@ pad_to_sequence_len: true
 gradient_accumulation_steps: 1
 micro_batch_size: 2
 num_epochs: 1
-optimizer: adamw_torch_fused  # adamw_8bit
+optimizer: adamw_torch_fused
 lr_scheduler: cosine
 learning_rate: 1e-5
 max_grad_norm: 1.0
