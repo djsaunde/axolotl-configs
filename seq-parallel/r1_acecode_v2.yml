@@ -6,7 +6,7 @@ load_in_8bit: false
 load_in_4bit: false
 strict: false
 
-torch_compile: true
+# torch_compile: true
 
 vllm:
     host: 0.0.0.0
@@ -27,7 +27,7 @@ trl:
     - grpo_code.code_execution_reward_func
     - grpo_code.answer_execution_reward_func
 
-  num_generations: 16
+  num_generations: 2
   max_completion_length: 512
   log_completions: false
 
@@ -52,8 +52,8 @@ sample_packing: false
 eval_sample_packing: false
 pad_to_sequence_len: false
 
-gradient_accumulation_steps: 2
-micro_batch_size: 16 # 32
+gradient_accumulation_steps: 1
+micro_batch_size: 2 # 32
 num_epochs: 1
 max_steps: 2500
 
@@ -87,7 +87,7 @@ evals_per_epoch: 0
 saves_per_epoch: 0
 save_steps: 0.5
 
-wandb_project: seq-parallel-grpo-v3
+wandb_project: seq-parallel-grpo-v4
 wandb_entity: axolotl-ai
 wandb_watch: all
 wandb_name: sp2

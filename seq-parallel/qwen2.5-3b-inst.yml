@@ -1,0 +1,62 @@
+base_model: Qwen/Qwen2.5-3B-Instruct
+
+load_in_8bit: false
+load_in_4bit: false
+strict: false
+
+datasets:
+  - path: teknium/GPT4-LLM-Cleaned
+    type: alpaca
+dataset_prepared_path: last_run_prepared
+output_dir: ./outputs/lora-out
+
+sequence_len: 4096
+sample_packing: true
+pad_to_sequence_len: true
+
+# sequence_parallel_degree: 2
+# ring_attn_func: batch_stripe
+# ring_attn_func: varlen_llama3
+
+wandb_project: seq-parallel-ctx-manager
+wandb_entity: axolotl-ai
+wandb_watch: all
+wandb_name: baseline
+wandb_log_model:
+
+gradient_accumulation_steps: 1
+micro_batch_size: 1
+num_epochs: 1
+optimizer: adamw_torch_fused
+lr_scheduler: cosine
+learning_rate: 1e-5
+max_grad_norm: 1.0
+
+train_on_inputs: true
+group_by_length: false
+bf16: auto
+fp16:
+tf32: false
+
+gradient_checkpointing: false
+early_stopping_patience:
+resume_from_checkpoint:
+local_rank:
+logging_steps: 1
+xformers_attention:
+flash_attention: true
+
+warmup_steps: 10
+max_steps: 99
+# evals_per_epoch: 4
+# saves_per_epoch: 1
+save_strategy: "no"
+debug:
+deepspeed:
+weight_decay: 0.0
+fsdp:
+fsdp_config:
+special_tokens:
+  pad_token: "<|end_of_text|>"
+
+seed: 0
