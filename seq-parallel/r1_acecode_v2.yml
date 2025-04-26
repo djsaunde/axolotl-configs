@@ -87,8 +87,10 @@ evals_per_epoch: 0
 saves_per_epoch: 0
 save_steps: 0.5
 
-wandb_project: seq-parallel-grpo-v4
-wandb_entity: axolotl-ai
-wandb_watch: all
-wandb_name: sp2
-wandb_log_model: 
+# wandb_project: seq-parallel-grpo-v4
+# wandb_entity: axolotl-ai
+# wandb_watch: all
+# wandb_name: sp2
+# wandb_log_model: 
+
+seed: 0
