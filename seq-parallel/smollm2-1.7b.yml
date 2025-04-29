@@ -11,17 +11,17 @@ dataset_prepared_path: last_run_prepared
 output_dir: ./outputs/lora-out
 
 sequence_len: 4096
-sample_packing: true
-pad_to_sequence_len: true
+sample_packing: false
+pad_to_sequence_len: false
 
 # sequence_parallel_degree: 2
 # ring_attn_func: batch_stripe
 # ring_attn_func: varlen_llama3
 
-wandb_project: seq-parallel-ctx-manager
+wandb_project: seq-parallel-ctx-manager-v2
 wandb_entity: axolotl-ai
 wandb_watch: all
-wandb_name: baseline
+wandb_name: sp2
 wandb_log_model:
 
 gradient_accumulation_steps: 1
