@@ -1,0 +1,47 @@
+base_model: Qwen/Qwen2.5-1.5B-Instruct
+
+trust_remote_code: false
+
+load_in_8bit: true
+load_in_4bit: false
+strict: false
+
+datasets:
+  - path: tatsu-lab/alpaca
+    type: alpaca
+
+dataset_exact_deduplication: true
+
+sequence_len: 2048
+sample_packing: false
+pad_to_sequence_len:
+
+dataset_prepared_path:
+
+adapter: lora
+lora_model_dir:
+lora_r: 8
+lora_alpha: 16
+lora_dropout: 0.05
+lora_target_linear: true
+
+gradient_accumulation_steps: 2
+micro_batch_size: 1
+num_epochs: 3
+optimizer: adamw_torch
+lr_scheduler: cosine
+learning_rate: 0.0002
+# max_grad_norm: 2
+
+bf16: auto
+tf32: false
+
+gradient_checkpointing: false
+resume_from_checkpoint:
+logging_steps: 1
+flash_attention: false
+
+warmup_steps: 10
+evals_per_epoch: 6
+saves_per_epoch: 1
+weight_decay: 0.01
