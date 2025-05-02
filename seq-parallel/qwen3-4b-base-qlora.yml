@@ -1,7 +1,7 @@
-base_model: Qwen/Qwen2.5-3B-Instruct
+base_model: Qwen/Qwen3-4B-Base
 
 load_in_8bit: false
-load_in_4bit: false
+load_in_4bit: true
 strict: false
 
 datasets:
@@ -9,6 +9,22 @@ datasets:
     type: alpaca
 dataset_prepared_path: last_run_prepared
 output_dir: ./outputs/lora-out
+
+# lora_qkv_kernel: true
+# lora_mlp_kernel: true
+# lora_o_kernel: true
+
+adapter: qlora
+lora_r: 32
+lora_alpha: 64
+lora_target_modules:
+  - q_proj
+  - v_proj
+  - k_proj
+  - o_proj
+  - gate_proj
+  - down_proj
+  - up_proj
 
 sequence_len: 4096
 sample_packing: true
