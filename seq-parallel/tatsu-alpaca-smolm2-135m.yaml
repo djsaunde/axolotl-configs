@@ -1,0 +1,45 @@
+base_model: HuggingFaceTB/SmolLM2-135M
+bf16: auto
+datasets:
+- path: tatsu-lab/alpaca
+  split: train[:10%]
+  type: alpaca
+eval_sample_packing: false
+flash_attention: true
+gradient_accumulation_steps: 2
+learning_rate: 1.0e-05
+# load_in_4bit: true
+load_in_8bit: false
+logging_steps: 1
+# adapter: qlora
+# lora_alpha: 16
+# lora_dropout: 0.05
+# lora_modules_to_save:
+# - embed_tokens
+# - lm_head
+# lora_r: 8
+# lora_target_linear: true
+lr_scheduler: cosine
+max_steps: 8
+micro_batch_size: 2
+num_epochs: 1
+optimizer: adamw_8bit
+output_dir: /workspace/data/temp_dir
+pad_to_sequence_len: false
+# ring_attn_func: batch_ring
+sample_packing: false
+saves_per_epoch: 1
+sequence_len: 2048
+sequence_parallel_degree: 2
+special_tokens:
+  pad_token: <|endoftext|>
+strict: false
+use_tensorboard: true
+warmup_steps: 1
+weight_decay: 0.0
+
+wandb_project: seq-parallel-debug-v2
+wandb_entity: axolotl-ai
+wandb_watch: all
+wandb_name:
+wandb_log_model:

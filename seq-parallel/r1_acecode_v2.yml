@@ -31,6 +31,8 @@ trl:
   max_completion_length: 512
   log_completions: false
 
+  use_liger_loss: false
+
 chat_template: qwen_25
 datasets:
   - path: axolotl-ai-co/AceCode-87K
