@@ -1,0 +1,70 @@
+base_model: HuggingFaceTB/SmolLM2-1.7B
+
+torch_compile: false
+
+load_in_8bit: false
+load_in_4bit: false
+strict: false
+
+datasets:
+  - path: trl-lib/tldr
+    type:
+      system_prompt: "Give a TL;DR of the following Reddit post."
+      field_system: system
+      field_instruction: prompt
+      field_output: completion
+      format: "<|user|>\n{instruction}\n<|assistant|>\n"
+      no_input_format: "<|user|>\n{instruction}\n<|assistant|>\n"
+    split: train
+
+dataset_prepared_path: last_run_prepared
+
+sequence_len: 4096
+sample_packing: true
+pad_to_sequence_len: true
+
+# wandb_project: tldr-red-hat
+# wandb_entity: axolotl-ai
+# wandb_watch: all
+# wandb_name: tldr-test
+# wandb_log_model:
+
+gradient_accumulation_steps: 1
+micro_batch_size: 1
+num_epochs: 1
+optimizer: adamw_torch_fused
+lr_scheduler: cosine
+learning_rate: 1e-5
+max_grad_norm: 1.0
+
+train_on_inputs: false
+bf16: auto
+fp16:
+tf32: false
+
+early_stopping_patience:
+resume_from_checkpoint:
+logging_steps: 1
+flash_attention: true
+
+warmup_ratio: 0.05
+eval_steps: 0.05
+val_set_size: 0.05
+save_strategy: "best"
+metric_for_best_model: "loss"
+
+debug:
+deepspeed:
+weight_decay: 0.0
+special_tokens:
+  pad_token: "<|end_of_text|>"
+
+seed: 0
+
+plugins:
+  - axolotl.integrations.liger.LigerPlugin
+liger_rope: true
+liger_rms_norm: true
+liger_glu_activation: true
+liger_layer_norm: true
+liger_fused_linear_cross_entropy: true

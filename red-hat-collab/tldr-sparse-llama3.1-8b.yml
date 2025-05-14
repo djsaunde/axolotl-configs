@@ -1,0 +1,95 @@
+base_model: RedHatAI/Sparse-Llama-3.1-8B-2of4
+
+load_in_8bit: false
+load_in_4bit: false
+strict: false
+
+datasets:
+  - path: trl-lib/tldr
+    type:
+      system_prompt: "Give a TL;DR of the following Reddit post."
+      field_system: system
+      field_instruction: prompt
+      field_output: completion
+      format: "<|user|>\n{instruction}\n<|assistant|>\n"
+      no_input_format: "<|user|>\n{instruction}\n<|assistant|>\n"
+    split: train
+
+dataset_prepared_path: last_run_prepared
+
+sequence_len: 4096
+sample_packing: true
+pad_to_sequence_len: true
+eval_sample_packing: true
+
+wandb_project: tldr-red-hat
+wandb_entity: axolotl-ai
+wandb_watch:
+wandb_name: tldr-test
+wandb_log_model:
+
+gradient_accumulation_steps: 1
+micro_batch_size: 1
+num_epochs: 1
+optimizer: adamw_bnb_8bit
+lr_scheduler: cosine
+learning_rate: 1e-5
+max_grad_norm: 1.0
+
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+
+train_on_inputs: false
+bf16: auto
+fp16:
+tf32: false
+
+early_stopping_patience:
+resume_from_checkpoint:
+logging_steps: 1
+flash_attention: true
+
+warmup_ratio: 0.05
+eval_steps: 0.05
+val_set_size: 0.05
+save_strategy: "best"
+save_total_limit: 1
+metric_for_best_model: "loss"
+
+debug:
+deepspeed:
+weight_decay: 0.0
+special_tokens:
+  pad_token: "<|end_of_text|>"
+
+seed: 0
+
+torch_compile: true
+
+plugins:
+  - axolotl.integrations.liger.LigerPlugin
+  - axolotl.integrations.llm_compressor.LLMCompressorPlugin
+
+liger_rope: true
+liger_rms_norm: true
+liger_glu_activation: true
+liger_layer_norm: true
+liger_fused_linear_cross_entropy: true
+
+llmcompressor:
+  recipe:
+    finetuning_stage:
+      finetuning_modifiers:
+        ConstantPruningModifier:
+          targets: [
+            're:.*q_proj.weight',
+            're:.*k_proj.weight',
+            're:.*v_proj.weight',
+            're:.*o_proj.weight',
+            're:.*gate_proj.weight',
+            're:.*up_proj.weight',
+            're:.*down_proj.weight',
+          ]
+          start: 0
+  save_compressed: true
