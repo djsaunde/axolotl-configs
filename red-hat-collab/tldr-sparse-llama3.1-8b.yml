@@ -30,7 +30,7 @@ wandb_log_model:
 
 gradient_accumulation_steps: 1
 micro_batch_size: 1
-num_epochs: 1
+num_epochs: 5
 optimizer: adamw_bnb_8bit
 lr_scheduler: cosine
 learning_rate: 1e-5
