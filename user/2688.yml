@@ -13,7 +13,7 @@ liger_rms_norm: true
 liger_glu_activation: true
 liger_fused_linear_cross_entropy: true
 
-dataset_prepared_path: /workspace/axolotl/last_run_prepared
+dataset_prepared_path: /workspace/data/last_run_prepared
 strict: false
 
 # Save model as safetensors (require safetensors package)
@@ -22,6 +22,7 @@ auto_resume_from_checkpoints: true
 # Custom JSON dataset configuration
 datasets:
   - path: /workspace/data/datasets/subset_1m_dataset/data-00000-of-00001.arrow
+  # - path: /workspace/data/datasets/junotrade___my_dataset
     type: completion
     # data_files:
     #   - /workspace/data/datasets/subset_1m_dataset/data-00000-of-00001.arrow
@@ -45,7 +46,7 @@ pad_to_sequence_len: true
 
 # Training parameters
 gradient_accumulation_steps: 1  # From your Python script
-micro_batch_size: 250  # Batch size from your script
+micro_batch_size: 1000  # Batch size from your script
 num_epochs: 1  # Number of epochs from your script
 #optimizer: adamw_torch
 optimizer: adopt_adamw
