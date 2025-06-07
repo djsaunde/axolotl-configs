@@ -1,4 +1,4 @@
-base_model: mistralai/Mistral-Small-3.1-24B-Instruct-2503
+base_model: mistralai/magistral-small
 processor_type: AutoProcessor
 
 load_in_8bit: true
@@ -14,9 +14,9 @@ datasets:
     type: chat_template
     split: train[:1%]
     field_messages: messages
-dataset_prepared_path: last_run_prepared
+dataset_prepared_path: /workspace/data/last_run_prepared
 val_set_size: 0.01
-output_dir: ./outputs/out
+output_dir: /workspace/data/outputs/out
 
 adapter: lora
 lora_model_dir:
