@@ -1,5 +1,4 @@
-base_model: mistralai/magistral-small
-# processor_type: AutoProcessor
+base_model: mistralai/Devstral-Small-2505
 
 load_in_8bit: true
 
