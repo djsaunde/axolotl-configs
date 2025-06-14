@@ -69,7 +69,7 @@ fsdp_config:
 special_tokens:
   pad_token: "<|end_of_text|>"
 
-sequence_parallel_degree: 2
+context_parallel_degree: 2
 
 # wandb_project: seq-parallel
 # wandb_entity: axolotl-ai

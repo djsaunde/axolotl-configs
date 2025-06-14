@@ -30,7 +30,7 @@ pad_to_sequence_len: false
 sample_packing: false
 saves_per_epoch: 1
 sequence_len: 2048
-sequence_parallel_degree: 2
+context_parallel_degree: 2
 special_tokens:
   pad_token: <|endoftext|>
 strict: false

@@ -43,7 +43,7 @@ wandb_watch:
 wandb_name:
 wandb_log_model:
 
-sequence_parallel_degree: 4 #1 #4  # Set to the number of GPUs to split sequences across
+context_parallel_degree: 4 #1 #4  # Set to the number of GPUs to split sequences across
 flash_attention: true  # SP requires flash attention
 micro_batch_size: 1  # SP requires this is set to 1
 # (optional) strides across the key dimension; larger values use more memory but should make training a bit faster

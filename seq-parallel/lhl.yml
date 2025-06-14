@@ -25,7 +25,7 @@ evals_per_epoch: 2
 dataset_prepared_path: last_run_prepared
 
 sequence_len: 8192
-sequence_parallel_degree: 2  # Split each sequence into 4 parts
+context_parallel_degree: 2  # Split each sequence into 4 parts
 sample_packing: true
 pad_to_sequence_len: true
 

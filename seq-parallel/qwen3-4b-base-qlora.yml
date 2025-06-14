@@ -30,7 +30,7 @@ sequence_len: 4096
 sample_packing: true
 pad_to_sequence_len: true
 
-# sequence_parallel_degree: 2
+# context_parallel_degree: 2
 # ring_attn_func: batch_stripe
 # ring_attn_func: varlen_llama3
 
