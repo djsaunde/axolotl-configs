@@ -17,7 +17,7 @@ datasets:
 dataset_prepared_path: last_run_prepared
 
 sequence_len: 4096
-sample_packing: true
+sample_packing: false
 pad_to_sequence_len: false
 
 context_parallel_degree: 2
