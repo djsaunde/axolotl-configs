@@ -16,6 +16,11 @@ sequence_len: 2048
 special_tokens:
   pad_token: <|endoftext|>
 
+flash_attention: true
+
+sample_packing: true
+sample_packing_sequentially: true
+
 # wandb_project: diff-transformer
 # wandb_entity: axolotl-ai
 # wandb_watch: all
