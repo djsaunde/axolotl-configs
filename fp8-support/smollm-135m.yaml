@@ -1,0 +1,25 @@
+base_model: HuggingFaceTB/SmolLM2-135M
+datasets:
+  - path: mhenrichsen/alpaca_2k_test
+    type: alpaca
+
+gradient_accumulation_steps: 1
+learning_rate: 1e-4
+val_set_size: 0.1
+micro_batch_size: 1
+sequence_len: 2048
+special_tokens:
+  pad_token: <|endoftext|>
+
+flash_attention: true
+
+sample_packing: true
+
+# accelerator_config:
+#   mixed_precision: fp8
+
+# wandb_project: diff-transformer
+# wandb_entity: axolotl-ai
+# wandb_watch: all
+# wandb_name: base-smollm2-135m
+# wandb_log_model: 
