@@ -1,4 +1,6 @@
-base_model: HuggingFaceTB/SmolLM2-135M
+# base_model: HuggingFaceTB/SmolLM2-135M
+# base_model: HuggingFaceTB/SmolLM2-1.7B
+base_model: meta-llama/Llama-3.1-8B
 datasets:
   - path: mhenrichsen/alpaca_2k_test
     type: alpaca
@@ -6,17 +8,22 @@ datasets:
 gradient_accumulation_steps: 1
 learning_rate: 1e-4
 val_set_size: 0.1
-micro_batch_size: 1
+micro_batch_size: 2
 sequence_len: 2048
 special_tokens:
   pad_token: <|endoftext|>
 
 flash_attention: true
-
 sample_packing: true
 
-# accelerator_config:
-#   mixed_precision: fp8
+dataset_prepared_path: ./last_run_prepared
+
+accelerator_config:
+  mixed_precision: fp8
+  fp8_config:
+    backend: AO
+
+torch_compile: true
 
 # wandb_project: diff-transformer
 # wandb_entity: axolotl-ai
