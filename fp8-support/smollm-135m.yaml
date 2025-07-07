@@ -1,6 +1,6 @@
 # base_model: HuggingFaceTB/SmolLM2-135M
-# base_model: HuggingFaceTB/SmolLM2-1.7B
-base_model: meta-llama/Llama-3.1-8B
+base_model: HuggingFaceTB/SmolLM2-1.7B
+# base_model: meta-llama/Llama-3.1-8B
 datasets:
   - path: mhenrichsen/alpaca_2k_test
     type: alpaca
@@ -13,15 +13,19 @@ sequence_len: 2048
 special_tokens:
   pad_token: <|endoftext|>
 
+# sdp_attention: true
 flash_attention: true
 sample_packing: true
 
 dataset_prepared_path: ./last_run_prepared
+output_dir: /workspace/data/model-out
 
-accelerator_config:
-  mixed_precision: fp8
-  fp8_config:
-    backend: AO
+# accelerator_config:
+#   mixed_precision: fp8
+#   fp8_config:
+#     backend: AO
+
+gradient_checkpointing: true
 
 torch_compile: true
 
