@@ -1,6 +1,6 @@
 # base_model: HuggingFaceTB/SmolLM2-135M
-base_model: HuggingFaceTB/SmolLM2-1.7B
-# base_model: meta-llama/Llama-3.1-8B
+# base_model: HuggingFaceTB/SmolLM2-1.7B
+base_model: meta-llama/Llama-3.1-8B
 datasets:
   - path: mhenrichsen/alpaca_2k_test
     type: alpaca
@@ -24,7 +24,10 @@ accelerator_config:
   mixed_precision: fp8  
   fp8_config:
     backend: AO
-    recipe_name: tensorwise
+    # recipe_name: tensorwise
+    config:
+      enable_fsdp_float8_all_gather: true
+      force_recompute_fp8_weight_in_bwd: true
 
 # gradient_checkpointing: true
 
@@ -37,3 +40,19 @@ torch_compile: true
 # wandb_watch: all
 # wandb_name: smollm2-1.7b-fp8-compile
 # wandb_log_model: 
+
+fsdp:
+  - full_shard
+  - auto_wrap
+
+fsdp_config:
+  fsdp_version: 2
+  fsdp_offload_params: false
+  # fsdp_cpu_ram_efficient_loading: true
+  fsdp_cpu_ram_efficient_loading: false
+  fsdp_auto_wrap_policy: TRANSFORMER_BASED_WRAP
+  fsdp_transformer_layer_cls_to_wrap: LlamaDecoderLayer
+  fsdp_state_dict_type: FULL_STATE_DICT
+  fsdp_sharding_strategy: FULL_SHARD
+  fsdp_reshard_after_forward: true
+  fsdp_activation_checkpointing: true

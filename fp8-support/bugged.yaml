@@ -1,0 +1,17 @@
+base_model: meta-llama/Llama-3.1-8B
+datasets:
+  - path: mhenrichsen/alpaca_2k_test
+    type: alpaca
+
+gradient_accumulation_steps: 1
+learning_rate: 1e-4
+val_set_size: 0.1
+micro_batch_size: 2
+sequence_len: 2048
+special_tokens:
+  pad_token: <|endoftext|>
+
+sdp_attention: true
+
+dataset_prepared_path: ./last_run_prepared
+output_dir: /workspace/data/model-out
