@@ -20,17 +20,18 @@ sample_packing: true
 dataset_prepared_path: ./last_run_prepared
 output_dir: /workspace/data/model-out
 
-# accelerator_config:
-#   mixed_precision: fp8
-#   fp8_config:
-#     backend: AO
+accelerator_config:
+  mixed_precision: fp8  
+  fp8_config:
+    backend: AO
+    recipe_name: tensorwise
 
-gradient_checkpointing: true
+# gradient_checkpointing: true
 
-torch_compile: true
+# torch_compile: true
 
-# wandb_project: diff-transformer
+# wandb_project: fp8
 # wandb_entity: axolotl-ai
 # wandb_watch: all
-# wandb_name: base-smollm2-135m
+# wandb_name: smollm2-1.7b-fp8-compile
 # wandb_log_model: 
