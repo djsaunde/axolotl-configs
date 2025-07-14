@@ -6,6 +6,7 @@ datasets:
     type: alpaca
 
 gradient_accumulation_steps: 1
+num_epochs: 3
 learning_rate: 1e-4
 val_set_size: 0.1
 micro_batch_size: 2
@@ -20,11 +21,13 @@ sample_packing: true
 dataset_prepared_path: ./last_run_prepared
 output_dir: /workspace/data/model-out
 
-accelerator_config:
-  mixed_precision: fp8  
-  fp8_config:
-    backend: AO
-    recipe_name: tensorwise
+# accelerator_config:
+#   mixed_precision: fp8
+#   fp8_config:
+#     backend: AO
+#     recipe_name: tensorwise
+
+fp8: true
 
 # gradient_checkpointing: true
 
