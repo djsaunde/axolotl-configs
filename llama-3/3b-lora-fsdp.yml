@@ -1,4 +1,5 @@
-base_model: meta-llama/Llama-3.2-3B
+# base_model: meta-llama/Llama-3.2-3B
+base_model: meta-llama/Llama-3.2-1B
 # Automatically upload checkpoint and final model to HF
 # hub_model_id: username/custom_model_name
 
@@ -20,13 +21,13 @@ datasets:
       content: value
 
 dataset_prepared_path: last_run_prepared
-val_set_size: 0.02
+# val_set_size: 0.02
 output_dir: ./outputs/out
 
 sequence_len: 1024
 sample_packing: true
 
-adapter: lora
+adapter: qlora
 lora_model_dir:
 
 lora_r: 16
@@ -45,6 +46,9 @@ lora_target_modules:
 lora_mlp_kernel: true
 lora_qkv_kernel: true
 lora_o_kernel: true
+
+load_in_8bit: false
+load_in_4bit: true
 
 wandb_project:
 wandb_entity:
@@ -67,7 +71,7 @@ logging_steps: 1
 flash_attention: true
 
 warmup_steps: 100
-evals_per_epoch: 2
+# evals_per_epoch: 2
 saves_per_epoch: 1
 weight_decay: 0.0
 
