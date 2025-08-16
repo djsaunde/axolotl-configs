@@ -1,0 +1,41 @@
+base_model: google/gemma-3-270m-it
+
+load_in_4bit: true
+adapter: qlora
+
+lora_r: 8
+lora_alpha: 16
+lora_target_linear: true
+lora_target_modules:
+  - q_proj
+  - v_proj
+  - k_proj
+  - o_proj
+  - gate_proj
+  - up_proj
+  - down_proj
+lora_modules_to_save:
+  - embed_tokens
+  - lm_head
+
+micro_batch_size: 1
+gradient_accumulation_steps: 1
+num_epochs: 3
+learning_rate: 0.0001
+
+datasets:
+  - path: mhenrichsen/alpaca_2k_test
+    type: alpaca
+val_set_size: 0.1
+dataset_prepared_path: ./last_run_prepared
+
+special_tokens:
+  eos_token: <|im_end|>
+
+output_dir: ./outputs/run1
+
+gradient_checkpointing: true
+optimizer: adamw_8bit
+
+plugins:
+  - axolotl.integrations.cut_cross_entropy.CutCrossEntropyPlugin
