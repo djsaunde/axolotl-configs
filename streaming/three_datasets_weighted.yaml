@@ -1,0 +1,25 @@
+base_model: HuggingFaceTB/SmolLM2-135M
+datasets:
+  - path: mhenrichsen/alpaca_2k_test
+    type: alpaca
+  - path: tatsu-lab/alpaca
+    type: alpaca
+  - path: yahma/alpaca-cleaned
+    type: alpaca
+
+# Streaming config
+streaming: true
+max_steps: 1000
+
+# Dataset mixing with three datasets using weighted strategy
+dataset_mixing_strategy: weighted
+mixing_weights: [0.5, 0.3, 0.2]  # 50% first, 30% second, 20% third
+
+gradient_accumulation_steps: 1
+learning_rate: 1e-4
+micro_batch_size: 1
+sequence_len: 4096
+special_tokens:
+  pad_token: <|endoftext|>
+flash_attention: true
+sample_packing: true
