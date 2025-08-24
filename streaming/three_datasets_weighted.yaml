@@ -23,3 +23,9 @@ special_tokens:
   pad_token: <|endoftext|>
 flash_attention: true
 sample_packing: true
+
+wandb_project: streaming
+wandb_entity: axolotl-ai
+wandb_watch: all
+wandb_name:
+wandb_log_model: end

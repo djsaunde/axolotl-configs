@@ -1,0 +1,23 @@
+base_model: HuggingFaceTB/SmolLM2-135M
+datasets:
+  - path: mhenrichsen/alpaca_2k_test
+    type: alpaca
+
+# Streaming config
+streaming: true
+max_steps: 10
+
+gradient_accumulation_steps: 1
+learning_rate: 1e-4
+micro_batch_size: 1
+sequence_len: 4096
+special_tokens:
+  pad_token: <|endoftext|>
+
+# Explicitly disable flash attention
+flash_attention: false
+sample_packing: true
+
+# Disable wandb
+wandb_project:
+wandb_entity:

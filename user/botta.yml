@@ -1,0 +1,53 @@
+# Modelo
+base_model: Qwen/Qwen2.5-0.5B
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+bf16: true
+# Dataset
+task_type: pretraining
+datasets:
+  - path: mhenrichsen/alpaca_2k_test
+    type: alpaca
+
+#dataset_processes: 1
+
+# Investigar
+#sample_packing_eff_est: 1.0
+# sample_packing_group_size: int | None = 100000
+sample_packing_bin_size: 500 #int | None = 200
+pad_to_sequence_len: true # quando sample_packing: true | como false mudou nada
+# multipack_real_batches: false #bool | None # ?
+# pretraining_sample_concatenation: false #bool | None # ? | como true/false mudou nada
+pretrain_multipack_buffer_size: 10000 #int | None = 10000 # ?
+# Parâmetros
+sequence_len: 2048
+micro_batch_size: 128
+#auto_find_batch_size: true
+gradient_accumulation_steps: 1
+#num_epochs: 1
+max_steps: 20
+sample_packing: true
+flash_attention: true
+pretrain_multipack_attn: true
+group_by_length: false
+# Logs
+logging_steps: 1
+optimizer: adamw_bnb_8bit
+learning_rate: 2e-5
+lr_scheduler: cosine
+weight_decay: 0.0
+warmup_steps: 100   
+# Output
+saves_per_epoch: 1
+output_dir: pt_qwen0.5b/
+plugins:
+  #- axolotl.integrations.cut_cross_entropy.CutCrossEntropyPlugin
+  - axolotl.integrations.liger.LigerPlugin
+liger_rope: true
+liger_rms_norm: true
+liger_glu_activation: true
+liger_layer_norm: true
+liger_fused_linear_cross_entropy: true
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false

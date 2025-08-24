@@ -1,8 +1,6 @@
 base_model: HuggingFaceTB/SmolLM2-135M
-datasets:
+pretraining_dataset:
   - path: mhenrichsen/alpaca_2k_test
-    type: alpaca
-  - path: tatsu-lab/alpaca
     type: alpaca
 
 # Streaming config
@@ -10,7 +8,7 @@ streaming: true
 max_steps: 1000
 
 # Dataset mixing with round-robin strategy (alternating samples)
-dataset_mixing_strategy: round_robin
+# dataset_mixing_strategy: round_robin
 
 gradient_accumulation_steps: 1
 learning_rate: 1e-4
