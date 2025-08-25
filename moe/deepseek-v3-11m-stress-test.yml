@@ -1,0 +1,84 @@
+base_model: axolotl-ai-co/DeepSeek-V3-11M
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+
+# Stress Test Configuration for MoE Kernels
+# This config pushes the small model harder to showcase kernel performance
+plugins:
+  - axolotl.integrations.moe_kernels.plugin.MoeOptimizedPlugin
+
+moe_kernels: true
+moe_group_size: 64
+moe_persistent_kernel: true
+
+trust_remote_code: false
+
+# Aggressive training settings to stress-test kernels
+load_in_8bit: false
+load_in_4bit: false
+
+# Dataset Configuration - using larger subset
+datasets:
+  - path: mlabonne/FineTome-100k
+    type: chat_template
+    field_messages: conversations
+    message_field_role: from
+    message_field_content: value
+    split: train[:50%]  # Using 50% instead of 10%
+
+dataset_prepared_path: last_run_prepared
+val_set_size: 0.05
+output_dir: ./outputs/deepseek-v3-11m-stress-test
+
+# Aggressive sequence and batch configuration
+sequence_len: 4096  # Longer sequences to stress kernels
+sample_packing: true
+pad_to_sequence_len: true
+eval_sample_packing: false
+
+# Training Configuration - larger batches to utilize kernels more
+gradient_accumulation_steps: 4  # Higher accumulation
+micro_batch_size: 32  # Larger micro batches
+num_epochs: 2  # Multiple epochs instead of max_steps
+
+# Optimizer and Learning Rate
+optimizer: adamw_torch
+lr_scheduler: cosine
+learning_rate: 3e-5
+warmup_ratio: 0.1
+weight_decay: 0.01
+
+# Mixed Precision and Performance
+bf16: true
+fp16: false
+tf32: true
+gradient_checkpointing: true
+flash_attention: true
+dataloader_num_workers: 8  # More workers
+
+# Logging and Evaluation - more frequent to track performance
+logging_steps: 5
+eval_steps: 50
+save_steps: 100
+
+# Special tokens
+special_tokens:
+  bos_token: "<｜begin▁of▁sentence｜>"
+  eos_token: "<｜end▁of▁sentence｜>"
+
+# Chat template
+chat_template: deepseek_v3
+
+# Additional Configuration
+max_grad_norm: 1.0
+save_safetensors: true
+save_strategy: "steps"
+
+# Performance monitoring
+report_to: "none"
+run_name: "deepseek-v3-11m-stress-test"
+
+# Memory optimization
+dataloader_pin_memory: true
+remove_unused_columns: false
+group_by_length: true

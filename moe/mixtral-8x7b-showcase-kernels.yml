@@ -1,0 +1,92 @@
+# Real Working Example: Mixtral 8x7B with MoE Kernels
+# This showcases MoE kernel performance on a substantial model
+# that fits on A100 with proper configuration
+
+base_model: mistralai/Mixtral-8x7B-v0.1
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+
+# MoE Kernel Configuration
+plugins:
+  - axolotl.integrations.moe_kernels.plugin.MoeOptimizedPlugin
+
+moe_kernels: true
+moe_group_size: 128
+moe_persistent_kernel: true
+
+trust_remote_code: false
+
+# Memory efficient settings for A100 (80GB)
+load_in_8bit: false
+load_in_4bit: true
+adapter: qlora
+lora_r: 64
+lora_alpha: 128
+lora_dropout: 0.05
+lora_target_linear: true
+lora_fan_in_fan_out: false
+
+# Dataset Configuration - Simple alpaca format to avoid chat template issues
+datasets:
+  - path: yahma/alpaca-cleaned
+    type: alpaca
+    split: train[:1%]
+
+dataset_prepared_path: last_run_prepared
+val_set_size: 0.02
+output_dir: ./outputs/mixtral-8x7b-moe-kernels-showcase
+
+# Optimized for A100 memory constraints
+sequence_len: 1024  # Shorter sequences due to model size
+sample_packing: true
+pad_to_sequence_len: true
+eval_sample_packing: false
+
+# Training Configuration for single A100
+gradient_accumulation_steps: 16  # Large accumulation for effective batch size
+micro_batch_size: 1  # Small micro batch due to model size
+num_epochs: 1
+eval_strategy: "steps"
+
+# Optimizer and Learning Rate
+optimizer: adamw_torch
+lr_scheduler: cosine
+learning_rate: 2e-4
+warmup_ratio: 0.05
+weight_decay: 0.01
+
+# Mixed Precision and Performance
+bf16: true
+fp16: false
+tf32: true
+gradient_checkpointing: true
+flash_attention: true
+dataloader_num_workers: 2
+
+# Logging for performance comparison
+logging_steps: 5
+eval_steps: 50
+save_steps: 100
+
+# Tokenizer settings
+special_tokens:
+  pad_token: "[PAD]"
+
+# Chat template - using alpaca format, no need for mistral template
+# chat_template: mistral_v1
+
+# Additional Configuration
+max_grad_norm: 1.0
+save_safetensors: true
+save_strategy: "steps"
+
+# Performance monitoring
+report_to: "none"
+run_name: "mixtral-8x7b-moe-kernels-showcase"
+dataloader_pin_memory: false  # Conservative for large model
+remove_unused_columns: false
+group_by_length: true
+
+# Memory optimizations for large model
+max_memory_MB: 78000  # Leave some headroom on A100-80GB
+low_cpu_mem_usage: true

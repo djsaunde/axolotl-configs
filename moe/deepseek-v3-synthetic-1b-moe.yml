@@ -1,0 +1,102 @@
+# SYNTHETIC EXAMPLE: DeepSeek V3 1B+ MoE Configuration
+# This demonstrates how to configure MoE kernels for a larger model
+# Note: This references a hypothetical model for demonstration purposes
+
+base_model: deepseek-ai/DeepSeek-V3-1B  # Hypothetical larger model
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+
+# MoE Kernel Configuration for Larger Model
+plugins:
+  - axolotl.integrations.moe_kernels.plugin.MoeOptimizedPlugin
+
+moe_kernels: true
+moe_group_size: 128  # Larger group size for bigger model
+moe_persistent_kernel: true
+
+trust_remote_code: false
+
+# Memory efficient settings for larger model on single A100
+load_in_8bit: false
+load_in_4bit: true  # Use 4-bit quantization for larger model
+adapter: qlora
+lora_r: 64
+lora_alpha: 128
+lora_dropout: 0.05
+lora_target_linear: true
+lora_fan_in_fan_out: false
+
+# Dataset Configuration
+datasets:
+  - path: mlabonne/FineTome-100k
+    type: chat_template
+    field_messages: conversations
+    message_field_role: from
+    message_field_content: value
+    split: train[:25%]
+
+dataset_prepared_path: last_run_prepared
+val_set_size: 0.02
+output_dir: ./outputs/deepseek-v3-synthetic-1b-moe
+
+# Sequence Configuration optimized for A100
+sequence_len: 2048
+sample_packing: true
+pad_to_sequence_len: true
+eval_sample_packing: false
+
+# Training Configuration for single A100
+gradient_accumulation_steps: 8  # Increase accumulation for effective large batch
+micro_batch_size: 4  # Smaller micro batch due to larger model
+num_epochs: 1
+eval_strategy: "steps"
+
+# Optimizer and Learning Rate for larger model
+optimizer: adamw_torch
+lr_scheduler: cosine
+learning_rate: 2e-4  # Higher LR for LoRA
+warmup_ratio: 0.03
+weight_decay: 0.01
+
+# Mixed Precision and Performance
+bf16: true
+fp16: false
+tf32: true
+gradient_checkpointing: true
+flash_attention: true
+dataloader_num_workers: 4
+
+# Logging optimized for performance tracking
+logging_steps: 10
+eval_steps: 100
+save_steps: 200
+
+# Special tokens
+special_tokens:
+  bos_token: "<｜begin▁of▁sentence｜>"
+  eos_token: "<｜end▁of▁sentence｜>"
+
+# Chat template
+chat_template: deepseek_v3
+
+# Additional Configuration
+max_grad_norm: 1.0
+save_safetensors: true
+save_strategy: "steps"
+
+# Performance and memory optimizations
+report_to: "none"
+run_name: "deepseek-v3-synthetic-1b-moe"
+dataloader_pin_memory: true
+remove_unused_columns: false
+group_by_length: true
+
+# A100 specific optimizations
+fsdp: []  # Disable FSDP for single GPU
+deepspeed: null
+ddp_backend: "nccl"
+
+# Model-specific MoE optimizations
+# These would be tuned for a 1B+ model with more experts
+router_aux_loss_coef: 0.01  # Load balancing
+output_router_logits: false

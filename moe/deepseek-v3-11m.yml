@@ -1,0 +1,73 @@
+base_model: axolotl-ai-co/DeepSeek-V3-11M
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+
+# Optimized MoE Kernels for DeepSeek-V3 (11M test model)
+# This is a smaller test model suitable for development/testing
+# plugins:
+#   - axolotl.integrations.moe_kernels.plugin.MoeOptimizedPlugin
+
+# moe_kernels: true
+# moe_group_size: 64  # Smaller group size for smaller model
+# moe_persistent_kernel: true
+
+trust_remote_code: false
+
+# Full fine-tuning configuration for small model
+load_in_8bit: false
+load_in_4bit: false
+
+# Dataset Configuration
+datasets:
+  - path: mlabonne/FineTome-100k
+    type: chat_template
+    field_messages: conversations
+    message_field_role: from
+    message_field_content: value
+    split: train[:10%]
+
+dataset_prepared_path: last_run_prepared
+val_set_size: 0.01
+output_dir: ./outputs/deepseek-v3-11m-moe-optimized
+
+# Sequence Configuration
+sequence_len: 2048
+sample_packing: true
+pad_to_sequence_len: true
+eval_sample_packing: false
+
+# Training Configuration
+gradient_accumulation_steps: 1
+micro_batch_size: 32
+
+# Optimizer and Learning Rate
+optimizer: adamw_torch
+lr_scheduler: cosine
+learning_rate: 5e-5
+warmup_steps: 100
+max_steps: 1000
+weight_decay: 0.01
+
+# Mixed Precision and Performance
+bf16: true
+fp16: false
+tf32: true
+gradient_checkpointing: true
+flash_attention: true
+
+# Logging and Evaluation
+logging_steps: 10
+
+# Special tokens
+special_tokens:
+  bos_token: "<｜begin▁of▁sentence｜>"
+  eos_token: "<｜end▁of▁sentence｜>"
+
+# Chat template
+chat_template: deepseek_v3
+
+# Additional Configuration
+max_grad_norm: 1.0
+save_safetensors: true
+
+save_strategy: "no"
