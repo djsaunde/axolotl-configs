@@ -1,0 +1,37 @@
+# Pure pretraining configuration (plain text)
+base_model: HuggingFaceTB/SmolLM2-135M
+
+# When using streaming, max_steps is required
+max_steps: 10000
+
+pretraining_dataset:
+  - path: allenai/c4
+    name: en
+    type: pretrain  # Pure pretraining type
+    split: train
+
+# Dataset configuration
+sequence_len: 2048
+sample_packing: true
+pretrain_multipack_attn: true
+pretrain_multipack_buffer_size: 10000
+special_tokens:
+  pad_token: <|endoftext|>
+
+# Training hyperparameters
+gradient_accumulation_steps: 4
+micro_batch_size: 1
+optimizer: adamw_torch
+lr_scheduler: cosine
+learning_rate: 2e-5
+
+# Enable efficient training
+bf16: auto
+tf32: false
+gradient_checkpointing: true
+flash_attention: true
+
+logging_steps: 10
+eval_steps: 100
+save_steps: 200
+output_dir: ./outputs/streaming-model
