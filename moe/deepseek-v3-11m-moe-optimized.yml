@@ -31,14 +31,14 @@ val_set_size: 0.01
 output_dir: ./outputs/deepseek-v3-11m-moe-optimized
 
 # Sequence Configuration
-sequence_len: 2048
+sequence_len: 1024
 sample_packing: true
 pad_to_sequence_len: true
 eval_sample_packing: false
 
 # Training Configuration
 gradient_accumulation_steps: 1
-micro_batch_size: 32
+micro_batch_size: 1
 
 # Optimizer and Learning Rate
 optimizer: adamw_torch
