@@ -2,17 +2,7 @@ base_model: axolotl-ai-co/DeepSeek-V3-1B
 model_type: AutoModelForCausalLM
 tokenizer_type: AutoTokenizer
 
-# DeepSeek-V3 1B model configuration
-# ~4.7B parameters with MoE architecture:
-# - 16 routed experts, 4 active per token
-# - 2 shared experts (always active)
-# - 1536 hidden size, 24 layers
-
 trust_remote_code: true
-
-# Full fine-tuning configuration
-load_in_8bit: false
-load_in_4bit: false
 
 # Dataset Configuration
 datasets:
@@ -21,22 +11,24 @@ datasets:
     field_messages: conversations
     message_field_role: from
     message_field_content: value
-    split: train[:20%]  # Use more data for 1B model
+    split: train[:20%]
 
 dataset_prepared_path: last_run_prepared
-val_set_size: 0.01
-output_dir: ./outputs/deepseek-v3-1b
+output_dir: ./outputs/deepseek-v3-1b-moe-optimized
+
+# Model Configuration
+model_config:
+  output_router_logits: true  # Enable for load balancing loss
 
 # Sequence Configuration
-sequence_len: 2048  # Increased from 11M model
+sequence_len: 8192
 sample_packing: true
 pad_to_sequence_len: true
-eval_sample_packing: false
 
 # Training Configuration
 num_epochs: 1
-gradient_accumulation_steps: 4
-micro_batch_size: 2
+gradient_accumulation_steps: 1
+micro_batch_size: 1
 
 # Optimizer and Learning Rate
 optimizer: adamw_torch
@@ -57,24 +49,8 @@ gradient_checkpointing_kwargs:
   use_reentrant: false
 flash_attention: true
 
-# MoE-specific Training Settings
-# Load balancing coefficient for auxiliary loss
-router_aux_loss_coef: 0.001
-
-# Logging and Evaluation
+# Logging and Saving
 logging_steps: 10
-eval_strategy: steps
-eval_steps: 100
-save_strategy: steps
-save_steps: 500
-save_total_limit: 3
-
-# Wandb Configuration (optional)
-wandb_project: deepseek-v3-1b
-wandb_entity:
-wandb_watch:
-wandb_name: deepseek-v3-1b-finetune
-wandb_log_model:
 
 # Special tokens
 special_tokens:
@@ -86,9 +62,14 @@ chat_template: deepseek_v3
 
 # Additional Configuration
 max_grad_norm: 1.0
-save_safetensors: true
 strict: false
 
 # Debugging options
-# debug: true
-# save_first_step: true  # Validate checkpoint saving
+debug: true
+
+# Wandb Configuration
+wandb_project: moe-kernels
+wandb_entity: axolotl-ai
+wandb_watch:
+wandb_name: deepseek-1b-baseline-8192sl-pack
+wandb_log_model:

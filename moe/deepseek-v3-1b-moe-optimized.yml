@@ -1,4 +1,4 @@
-base_model: /workspace/deepseek_v3_1b
+base_model: axolotl-ai-co/DeepSeek-V3-1B
 model_type: AutoModelForCausalLM
 tokenizer_type: AutoTokenizer
 
@@ -10,30 +10,11 @@ plugins:
 moe_kernels: true
 moe_group_size: 128  # Optimal for most hardware
 moe_persistent_kernel: true  # Enable L2 cache optimization
-# Auto-detects deepseek_v3 model type
-# Optionally specify explicitly:
-# moe_kernel_models:
-#   - deepseek_v3
 
 trust_remote_code: true
 
-# Full fine-tuning configuration
-# For memory efficiency, you could enable QLoRA:
 load_in_8bit: false
 load_in_4bit: false
-# adapter: qlora
-# lora_r: 64
-# lora_alpha: 32
-# lora_dropout: 0.05
-# lora_target_linear: false
-# lora_target_modules:
-#   - q_proj
-#   - k_proj
-#   - v_proj
-#   - o_proj
-#   - gate_proj
-#   - up_proj
-#   - down_proj
 
 # Dataset Configuration
 datasets:
@@ -42,10 +23,9 @@ datasets:
     field_messages: conversations
     message_field_role: from
     message_field_content: value
-    split: train[:20%]  # Use more data for 1B model
+    split: train[:20%]
 
 dataset_prepared_path: last_run_prepared
-val_set_size: 0.01
 output_dir: ./outputs/deepseek-v3-1b-moe-optimized
 
 # Model Configuration
@@ -53,15 +33,14 @@ model_config:
   output_router_logits: true  # Enable for load balancing loss
 
 # Sequence Configuration
-sequence_len: 2048  # Increased from 11M model
+sequence_len: 8192
 sample_packing: true
 pad_to_sequence_len: true
-eval_sample_packing: false
 
 # Training Configuration
 num_epochs: 1
-gradient_accumulation_steps: 4
-micro_batch_size: 2
+gradient_accumulation_steps: 1
+micro_batch_size: 1
 
 # Optimizer and Learning Rate
 optimizer: adamw_torch
@@ -82,44 +61,8 @@ gradient_checkpointing_kwargs:
   use_reentrant: false
 flash_attention: true
 
-# MoE-specific Training Settings
-# Load balancing coefficient for auxiliary loss
-router_aux_loss_coef: 0.001
-
-# Logging and Evaluation
+# Logging and Saving
 logging_steps: 10
-eval_strategy: steps
-eval_steps: 100
-save_strategy: steps
-save_steps: 500
-save_total_limit: 3
-
-# Wandb Configuration (optional)
-wandb_project: deepseek-v3-1b-moe-optimized
-wandb_entity:
-wandb_watch:
-wandb_name: deepseek-v3-1b-moe-kernels
-wandb_log_model:
-
-# FSDP Configuration for distributed training (optional)
-# Useful for scaling to multiple GPUs
-# fsdp:
-#   - full_shard
-#   - auto_wrap
-# fsdp_config:
-#   fsdp_limit_all_gathers: true
-#   fsdp_sync_module_states: true
-#   fsdp_offload_params: false
-#   fsdp_use_orig_params: false
-#   fsdp_cpu_ram_efficient_loading: true
-#   fsdp_auto_wrap_policy: TRANSFORMER_BASED_WRAP
-#   fsdp_transformer_layer_cls_to_wrap: DeepseekV3DecoderLayer
-#   fsdp_state_dict_type: SHARDED_STATE_DICT
-#   fsdp_sharding_strategy: FULL_SHARD
-#   fsdp_backward_prefetch: BACKWARD_PRE
-
-# Alternative: DeepSpeed Zero2 (comment out FSDP above and uncomment this)
-# deepspeed: deepspeed_configs/zero2.json
 
 # Special tokens
 special_tokens:
@@ -131,21 +74,14 @@ chat_template: deepseek_v3
 
 # Additional Configuration
 max_grad_norm: 1.0
-save_safetensors: true
 strict: false
-
-# Performance Notes:
-# The optimized MoE kernels provide significant speedups by:
-# - Using contiguous grouped GEMM for expert computations (~2-3x faster)
-# - Sorting tokens by expert assignment for better memory coalescence
-# - Reducing kernel launch overhead through grouped operations
-# - Better GPU utilization through optimized tiling strategies
-#
-# Expected improvements:
-# - 30-50% faster training on A100/H100 GPUs
-# - Better memory efficiency allowing larger batch sizes
-# - Reduced communication overhead in multi-GPU setups
 
 # Debugging options
 debug: true
-# save_first_step: true  # Validate checkpoint saving
+
+# Wandb Configuration
+wandb_project: moe-kernels
+wandb_entity: axolotl-ai
+wandb_watch:
+wandb_name: deepseek-1b-moe-kernels-8192sl-pack
+wandb_log_model:
