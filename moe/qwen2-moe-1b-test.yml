@@ -1,0 +1,94 @@
+base_model: axolotl-ai-co/qwen2-moe-1b-test
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+
+# Optimized MoE Kernels for Qwen2-MoE 1B - Testing Config (using our initialized model)
+# Enables high-performance contiguous grouped GEMM operations
+plugins:
+  - axolotl.integrations.moe_kernels.plugin.MoeOptimizedPlugin
+
+moe_kernels: true
+moe_group_size: 128  # Optimal for most hardware
+moe_persistent_kernel: true  # Enable L2 cache optimization
+
+trust_remote_code: true
+
+load_in_8bit: false
+load_in_4bit: false
+
+# Dataset Configuration - Small for testing
+datasets:
+  - path: mlabonne/FineTome-100k
+    type: chat_template
+    field_messages: conversations
+    message_field_role: from
+    message_field_content: value
+    split: train[:5%]  # Small subset for testing
+
+dataset_prepared_path: last_run_prepared
+output_dir: ./outputs/qwen2-moe-1b-test
+
+# Model Configuration
+model_config:
+  output_router_logits: true  # Enable for load balancing loss
+  norm_topk_prob: true  # Normalize top-k probabilities
+
+# Sequence Configuration - Shorter for faster testing
+sequence_len: 2048
+sample_packing: true
+pad_to_sequence_len: true
+
+# Training Configuration - Minimal for testing
+num_epochs: 1
+gradient_accumulation_steps: 1
+micro_batch_size: 1
+
+# Optimizer and Learning Rate
+optimizer: adamw_torch
+lr_scheduler: cosine
+learning_rate: 2e-5
+warmup_ratio: 0.05
+weight_decay: 0.01
+adam_beta1: 0.9
+adam_beta2: 0.95
+adam_epsilon: 1e-8
+
+# Mixed Precision and Performance
+bf16: true
+fp16: false
+tf32: true
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+flash_attention: true
+
+# MoE-specific Training Settings
+router_aux_loss_coef: 0.001
+
+# Logging and Saving - Frequent for testing
+logging_steps: 5
+save_steps: 50
+max_steps: 100  # Stop early for testing
+
+# Special tokens
+special_tokens:
+  pad_token: "<|endoftext|>"
+  eos_token: "<|im_end|>"
+  bos_token: "<|im_start|>"
+
+# Chat template
+chat_template: qwen2_5
+
+# Additional Configuration
+max_grad_norm: 1.0
+strict: false
+
+# Debugging options
+debug: true
+
+# Wandb Configuration
+wandb_project: moe-kernels-test
+wandb_entity: axolotl-ai
+wandb_watch:
+wandb_name: qwen2-moe-1b-test-2048sl
+wandb_log_model:

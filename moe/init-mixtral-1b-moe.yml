@@ -1,0 +1,112 @@
+# Initialize a small Mixtral-style MoE model (~1B parameters)
+# This will create a new model from scratch with random weights
+
+base_model: # Leave empty - we're initializing from config
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+tokenizer_config:  
+  pad_token: "<pad>"
+  eos_token: "</s>" 
+  bos_token: "<s>"
+  unk_token: "<unk>"
+
+# Enable random initialization from config
+random_init_weights: true
+
+# Model architecture configuration for ~1B parameters
+model_config:
+  model_type: mixtral
+  vocab_size: 32000
+  hidden_size: 1024          # Reduced from 4096
+  intermediate_size: 3584    # Reduced from 14336 (3.5x hidden_size)
+  num_hidden_layers: 16      # Reduced from 32
+  num_attention_heads: 16    # Reduced from 32
+  num_key_value_heads: 4     # Reduced from 8 (GQA)
+  
+  # MoE configuration (keeping similar ratios)
+  num_experts_per_tok: 2     # Same as original
+  num_local_experts: 8       # Same as original (8 experts)
+  output_router_logits: true
+  router_aux_loss_coef: 0.001
+  
+  # Context and other settings
+  max_position_embeddings: 4096
+  sliding_window: 2048       # Smaller window
+  rope_theta: 1000000.0
+  attention_dropout: 0.0
+  hidden_dropout: 0.0
+  
+  # Activation function
+  hidden_act: "silu"
+  
+  # Normalization
+  rms_norm_eps: 1e-5
+  
+  # Initialize with reasonable values
+  initializer_range: 0.02
+
+trust_remote_code: true
+
+# Training setup for continued pretraining
+datasets:
+  - path: mlabonne/FineTome-100k
+    type: chat_template
+    field_messages: conversations
+    message_field_role: from
+    message_field_content: value
+    split: train[:10%]
+
+dataset_prepared_path: last_run_prepared
+output_dir: ./outputs/mixtral-1b-moe-init
+
+# Optimized MoE Kernels
+plugins:
+  - axolotl.integrations.moe_kernels.plugin.MoeOptimizedPlugin
+
+moe_kernels: true
+moe_group_size: 128
+moe_persistent_kernel: true
+
+# Sequence Configuration
+sequence_len: 2048
+sample_packing: true
+pad_to_sequence_len: true
+
+# Training Configuration
+num_epochs: 1
+gradient_accumulation_steps: 4
+micro_batch_size: 2
+
+# Optimizer and Learning Rate
+optimizer: adamw_torch
+lr_scheduler: cosine
+learning_rate: 3e-4  # Higher LR for training from scratch
+warmup_ratio: 0.1
+weight_decay: 0.1
+adam_beta1: 0.9
+adam_beta2: 0.95
+adam_epsilon: 1e-8
+
+# Mixed Precision
+bf16: true
+fp16: false
+tf32: true
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+flash_attention: true
+
+# Logging
+logging_steps: 10
+save_steps: 500
+
+# Additional Configuration
+max_grad_norm: 1.0
+strict: false
+debug: true
+
+# Wandb
+wandb_project: moe-init
+wandb_entity: axolotl-ai
+wandb_name: mixtral-1b-moe-init
+wandb_log_model:

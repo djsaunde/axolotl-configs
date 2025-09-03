@@ -1,0 +1,70 @@
+# Initialize Qwen2-MoE-1B model with random weights (no training)
+# This will create the model, save it, and exit
+
+base_model: Qwen/Qwen2.5-A14B-Instruct  # Use as tokenizer source
+model_type: AutoModelForCausalLM
+tokenizer_type: AutoTokenizer
+
+# Enable random initialization from config
+random_init_weights: true
+
+# Model architecture configuration for ~1B parameters
+model_config:
+  model_type: qwen2_moe
+  vocab_size: 151936         # Qwen2 vocab size
+  hidden_size: 1024          # Reduced from 2048
+  intermediate_size: 2816    # Reduced from 5632 (2.75x hidden_size)
+  max_position_embeddings: 8192
+  
+  # Transformer layers
+  num_hidden_layers: 16      # Reduced from 24
+  num_attention_heads: 16    # Reduced from 16
+  num_key_value_heads: 16    # Same as attention heads (no GQA)
+  
+  # MoE configuration - smaller but similar structure
+  num_experts: 16            # Reduced from 60
+  num_experts_per_tok: 2     # Reduced from 4 for efficiency
+  moe_intermediate_size: 1024 # Reduced from 1408
+  shared_expert_intermediate_size: 2816 # Same as intermediate_size
+  decoder_sparse_step: 1     # Every layer has MoE
+  
+  # Router configuration
+  output_router_logits: true
+  router_aux_loss_coef: 0.001
+  norm_topk_prob: true
+  
+  # Attention and context
+  attention_dropout: 0.0
+  hidden_dropout: 0.0
+  rope_theta: 1000000.0
+  
+  # Activation and normalization
+  hidden_act: "silu"
+  rms_norm_eps: 1e-6
+  
+  # Initialization
+  initializer_range: 0.02
+
+trust_remote_code: true
+
+# NO TRAINING - just save the initialized model
+datasets: []  # Empty dataset list
+max_steps: 0  # No training steps
+save_model: true
+output_dir: ./outputs/qwen2-moe-1b-init
+
+# Required batch settings (even though we're not training)
+micro_batch_size: 1
+gradient_accumulation_steps: 1
+
+# Skip all training-related settings
+skip_data_loading: true
+
+# Just save and exit
+logging_steps: 1
+save_steps: 1
+save_total_limit: 1
+
+# Additional Configuration
+strict: false
+debug: true
