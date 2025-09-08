@@ -1,0 +1,64 @@
+base_model: HuggingFaceTB/SmolLM2-135M
+# Automatically upload checkpoint and final model to HF
+# hub_model_id: username/custom_model_name
+
+# Dataset configuration for pretraining
+pretraining_dataset:
+  - path: wikitext
+    name: wikitext-103-raw-v1
+    type: completion
+    field: text
+# val_set_size: 0.001
+dataset_prepared_path: last_run_prepared
+
+plugins:
+  - axolotl.integrations.diffusion.DiffusionPlugin
+diffusion_noise_schedule: "cosine"
+diffusion_min_mask_ratio: 0.15
+diffusion_max_mask_ratio: 0.85
+diffusion_num_diffusion_steps: 2000
+diffusion_eps: 5e-4
+diffusion_importance_weighting: true
+diffusion_generation_interval: 100
+
+output_dir: ./outputs/model-out
+
+sequence_len: 512
+sample_packing: false
+# eval_sample_packing: false
+
+gradient_accumulation_steps: 1
+micro_batch_size: 1
+max_steps: 1000
+
+optimizer: adamw_8bit
+lr_scheduler: cosine
+learning_rate: 3e-4
+
+bf16: auto
+tf32: true
+
+gradient_checkpointing: true
+resume_from_checkpoint:
+logging_steps: 10
+sdp_attention: true
+
+warmup_steps: 500
+
+save_strategy: steps
+# eval_strategy: steps
+save_steps: 1000
+# eval_steps: 1000
+
+special_tokens:
+  pad_token: "<|end_of_text|>"
+
+reinit_weights: true
+
+wandb_project: diffusion-plugin
+wandb_entity: axolotl-ai
+wandb_watch:
+wandb_name:
+wandb_log_model:
+
+# save_first_step: true  # uncomment this to validate checkpoint saving works with your config

@@ -5,11 +5,14 @@ tokenizer_type: AutoTokenizer
 # Optimized MoE Kernels for DeepSeek-V3 (11M test model)
 # This is a smaller test model suitable for development/testing
 plugins:
-  - axolotl.integrations.moe_kernels.plugin.MoeOptimizedPlugin
+  - axolotl.integrations.moe_kernels.plugin.MoeKernelsPlugin
 
-moe_kernels: true
-moe_group_size: 64  # Smaller group size for smaller model
-moe_persistent_kernel: true
+moe_kernels_enabled: true
+moe_kernels_models: ["deepseek_v3"]
+moe_kernels_group_size_m: 64  # Smaller group size for smaller model
+moe_kernels_persistent_kernel: true
+moe_kernels_use_triton: true
+moe_kernels_use_symmetric_memory: true
 
 trust_remote_code: false
 
