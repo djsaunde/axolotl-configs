@@ -44,13 +44,12 @@ lora_target_modules:
   - k_proj
   - o_proj
 
-lora_mlp_kernel: true
-lora_qkv_kernel: true
-lora_o_kernel: true
+# lora_mlp_kernel: true
+# lora_qkv_kernel: true
+# lora_o_kernel: true
 
-load_in_8bit: false
-# load_in_4bit: false
-load_in_4bit: true
+load_in_8bit: true
+load_in_4bit: false
 
 wandb_project:
 wandb_entity:
