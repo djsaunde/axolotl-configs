@@ -14,7 +14,7 @@ sequence_len: 128
 sample_packing: false
 pad_to_sequence_len: false
 
-gradient_accumulation_steps: 8
+gradient_accumulation_steps: 1
 micro_batch_size: 1
 num_epochs: 1
 optimizer: paged_adamw_8bit
@@ -41,10 +41,10 @@ model_config:
 
 special_tokens:
 
-# wandb_project: grouped_mm
-# wandb_entity: axolotl-ai
-# wandb_watch: all
-# wandb_name: grouped
-# wandb_log_model:
+wandb_project: grouped_mm2
+wandb_entity: axolotl-ai
+wandb_watch: all
+wandb_name: naive
+wandb_log_model:
 
-moe_backend: torch_grouped
+moe_backend: naive
