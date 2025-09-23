@@ -1,0 +1,39 @@
+base_model: axolotl-ai-co/deepseek-v3-8b
+model_config_type: deepseek_v3
+trust_remote_code: true
+
+datasets:
+  - path: tatsu-lab/alpaca
+    type: alpaca
+
+moe_kernels: true
+
+val_set_size: 0.0
+output_dir: ./outputs/deepseek-v3/full-ft
+
+sequence_len: 4096
+sample_packing: true
+
+num_epochs: 1
+micro_batch_size: 1
+gradient_accumulation_steps: 8
+optimizer: adamw_torch_fused
+learning_rate: 2e-5
+lr_scheduler: cosine
+warmup_ratio: 0.1
+weight_decay: 0.01
+
+bf16: auto
+flash_attention: true
+
+gradient_checkpointing: true
+gradient_checkpointing_kwargs:
+  use_reentrant: false
+
+logging_steps: 1
+evals_per_epoch: 2
+saves_per_epoch: 1
+
+# wandb_project:
+# wandb_entity:
+# wandb_name:
